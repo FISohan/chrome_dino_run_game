@@ -9,26 +9,26 @@ class Dino extends GamePainter{
    double x;
    double y;
   Dino({ required this.x,required this.y});
-   double v = 7;
-  double acc = -0.04;
+   double v = 0;
+  double acc = -0.00;
   up(double height){
     y += v;
     v += acc;
   }
 
+  void jump(){
+    v = 5.0;
+    acc = -0.09;
+  }
 
   bool isGround(){
-    log("$y == ${canvasSize.height - groundBottomMargin}");
+   // log("$y == ${canvasSize.height - groundBottomMargin}");
       if(abs(y) == canvasSize.height - groundBottomMargin)return true;
       return false;
   }
   void updateDino(){
      up(1);
      setDinoPosition(x, y);
-     if(isGround()){
-       v = 0;
-       acc = 0;
-     }
      //log(" -- ${isGround()}");
   }
 }
