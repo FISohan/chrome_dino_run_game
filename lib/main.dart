@@ -31,7 +31,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     ServicesBinding.instance.keyboard.addHandler(_onKeyTap);
     _dino = Dino(x: 0, y: 0);
     _controller = AnimationController(
-        duration: const Duration(milliseconds: 1), vsync: this)
+        duration: const Duration(seconds: 1), vsync: this)
       ..addListener(_update)
       ..forward()
       ..repeat();
@@ -58,6 +58,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   void dispose() {
     _controller.dispose();
     super.dispose();
+    ServicesBinding.instance.keyboard.removeHandler(_onKeyTap);
   }
 
   @override

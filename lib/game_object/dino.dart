@@ -1,34 +1,47 @@
 import 'dart:developer';
+import 'dart:ui';
 import 'package:run_dino_run/const.dart';
 import 'package:run_dino_run/painter/game_painter.dart';
 
 import '../utility/math.dart';
 
-class Dino extends GamePainter{
-
-   double x;
-   double y;
-  Dino({ required this.x,required this.y});
-   double v = 0;
+class Dino extends GamePainter {
+  double x;
+  double y;
+  bool shouldJump = false;
+  Dino({required this.x, required this.y});
+  double v = 0;
   double acc = -0.00;
-  up(double height){
+  up() {
     y += v;
     v += acc;
   }
 
-  void jump(){
-    v = 5.0;
-    acc = -0.09;
+  void jump() {
+    if (shouldJump) {
+      v = 5.0;
+      acc = -0.19;
+    }
   }
 
-  bool isGround(){
-   // log("$y == ${canvasSize.height - groundBottomMargin}");
-      if(abs(y) == canvasSize.height - groundBottomMargin)return true;
+  bool isGround() {
+    //log("$y");
+    if (y > 0) {
       return false;
+    }
+    //log("$y");
+    return true;
   }
-  void updateDino(){
-     up(1);
-     setDinoPosition(x, y);
-     //log(" -- ${isGround()}");
+
+  void updateDino() {
+
+    up();
+    if (isGround()) {
+      shouldJump = true;
+      v = 0.0;
+    }else{
+      shouldJump = false;
+    }
+    setDinoPosition(x, y);
   }
 }

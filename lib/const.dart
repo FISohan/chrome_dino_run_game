@@ -1,1 +1,5 @@
-const double groundBottomMargin = 10.2;
+const double
+    GROUND_BOTTOM_MARGIN = 10.2,
+    DINO_LEFT_MARGIN = 30.0,
+    DINO_VIEWPORT_HEIGHT = 40.0,
+    DINO_VIEWPORT_WIDTH = 40.0;
