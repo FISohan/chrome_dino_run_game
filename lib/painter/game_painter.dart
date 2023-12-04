@@ -2,13 +2,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:run_dino_run/const.dart';
+import 'dart:ui' as ui;
 
+import '../game_object/dino.dart';
 class GamePainter extends CustomPainter {
 
-  static Offset dinoPosition = Offset.zero;
+  Offset dinoPosition = Offset.zero;
   static Size _canvasSize = Size.zero;
   static Offset _currentDinoPosition = Offset.zero;
   static Offset _initPos = Offset.zero;
+
+   ui.Image img;
+   int index;
+  GamePainter(this.img,this.dinoPosition,this.index);
 
   void setDinoPosition(double x, double y){
     dinoPosition = Offset(x,y);
@@ -24,6 +30,11 @@ class GamePainter extends CustomPainter {
 
     // set canvas size
     _canvasSize = size;
+    double w = (img.width / 7) ;
+    double h = img.height + 0.0;
+    Rect r = Offset(w*index - 30, 30) & Size(w, h);
+    Rect r1 = Offset((size.width - 100)/2 ,(size.height - 100)/2) & Size(200, 200);
+    canvas.drawImageRect(img,r,r1,Paint());
     //_debugPoint(canvas, Offset(size.width, size.height));
   //  log("${size.height} * ${size.width}");
   }

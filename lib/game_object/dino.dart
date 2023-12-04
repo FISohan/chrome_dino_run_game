@@ -5,11 +5,12 @@ import 'package:run_dino_run/painter/game_painter.dart';
 
 import '../utility/math.dart';
 
-class Dino extends GamePainter {
+class Dino  {
   double x;
   double y;
   bool shouldJump = false;
   Dino({required this.x, required this.y});
+
   double v = 0;
   double acc = -0.00;
   up() {
@@ -19,8 +20,8 @@ class Dino extends GamePainter {
 
   void jump() {
     if (shouldJump) {
-      v = 5.0;
-      acc = -0.19;
+      v = 7.0;
+      acc = -0.29;
     }
   }
 
@@ -34,14 +35,13 @@ class Dino extends GamePainter {
   }
 
   void updateDino() {
-
     up();
     if (isGround()) {
       shouldJump = true;
       v = 0.0;
-    }else{
+    } else {
       shouldJump = false;
     }
-    setDinoPosition(x, y);
+
   }
 }
