@@ -50,8 +50,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _loadImage("assets/sprites/s.png").then((value) => img = value.image);
     ServicesBinding.instance.keyboard.addHandler(_onKeyTap);
     _dino = Dino(x: 0, y: 0);
-    _spriteAnimationController = AnimationController(vsync: this,duration: const Duration(milliseconds: 1000));
-    _spriteAnimation = IntTween(begin: 0,end: 7).animate(_spriteAnimationController)
+    _spriteAnimationController = AnimationController(vsync: this,duration: const Duration(milliseconds: 500));
+    _spriteAnimation = IntTween(begin: 0,end: 4).animate(_spriteAnimationController)
     ..addListener(() {
       setState(() {
       });

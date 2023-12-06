@@ -30,24 +30,29 @@ class GamePainter extends CustomPainter {
 
     // set canvas size
     _canvasSize = size;
-    double w = (img.width / 7) ;
-    double h = img.height + 0.0;
-    Rect r = Offset(w*index - 30, 30) & Size(w, h);
-    Rect r1 = Offset((size.width - 100)/2 ,(size.height - 100)/2) & Size(200, 200);
-    canvas.drawImageRect(img,r,r1,Paint());
+   // _sprite(size, canvas);
     //_debugPoint(canvas, Offset(size.width, size.height));
   //  log("${size.height} * ${size.width}");
   }
 
+  void _sprite(Size size, Canvas canvas,Rect pos) {
+    double w = (img.width / 5) ;
+    double h = img.height + 0.0;
+    Rect r = Offset(w*index, 0) & Size(w, h);
+    Rect r1 = pos;
+  //  _debugRect(canvas, r1);
+    canvas.drawImageRect(img,r,r1,Paint());
+  }
+
   _drawDino(Canvas canvas,Size size,Offset pos){
     Paint dinoPaint = Paint()..color = Colors.green;
-    _initPos = Offset(DINO_LEFT_MARGIN, size.height - GROUND_BOTTOM_MARGIN - 40);
+    _initPos = Offset(DINO_LEFT_MARGIN, size.height - DINO_VIEWPORT_HEIGHT - GROUND_BOTTOM_MARGIN);
     pos += _initPos;
     _currentDinoPosition = pos;
     _debugPoint(canvas, pos);
     _debugPoint(canvas, Offset(DINO_LEFT_MARGIN, size.height - GROUND_BOTTOM_MARGIN));
     Rect rect = pos & const Size(DINO_VIEWPORT_WIDTH, DINO_VIEWPORT_HEIGHT);
-    canvas.drawRect(rect, dinoPaint);
+    _sprite(size, canvas, rect);
   }
   _drawGround(Canvas canvas,Size size){
     Paint groundPaint = Paint()..color = Colors.brown..strokeWidth=1;
@@ -57,6 +62,10 @@ class GamePainter extends CustomPainter {
   }
   _debugPoint(Canvas canvas,Offset offset){
     canvas.drawCircle(offset, 2, Paint()..color = Colors.red);
+  }
+  _debugRect(Canvas canvas,Rect r){
+    Paint p = Paint()..strokeWidth=2;
+    canvas.drawRect(r, p);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
