@@ -9,6 +9,7 @@ class Dino  {
   double x;
   double y;
   bool shouldJump = false;
+
   Dino({required this.x, required this.y});
 
   double v = 0;

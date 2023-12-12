@@ -1,13 +1,15 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:run_dino_run/const.dart';
 import 'package:run_dino_run/game_object/dino.dart';
+import 'package:run_dino_run/game_object/obstacle.dart';
 import 'package:run_dino_run/painter/game_painter.dart';
 import 'dart:ui' as ui;
 
 void main() {
-
   runApp(const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -31,6 +33,13 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   Offset dinoPos = const Offset(0, 0);
 
   int index = 0;
+  Random random = Random();
+
+  double _randomOffset() {
+    return OBSTACLE_MIN_OFFSET + random.nextDouble() * OBSTACLE_MAX_OFFSET;
+  }
+
+  List<Obstacle> obstacleList = List.empty();
 
   Future<ui.FrameInfo> _loadImage(String assetPath) async {
     try {
@@ -43,25 +52,36 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       return Future.error(err);
     }
   }
-   ui.Image? img;
+
+  ui.Image? img;
   @override
   void initState() {
     super.initState();
+    obstacleList = List.generate(
+        5,
+        (index) => Obstacle(
+            x: OBSTACLE_VIEWPORT_WIDTH * (index * _randomOffset()),
+            y: 0,
+            height: OBSTACLE_VIEWPORT_HEIGHT,
+            width: OBSTACLE_VIEWPORT_WIDTH));
+
     _loadImage("assets/sprites/s.png").then((value) => img = value.image);
+
     ServicesBinding.instance.keyboard.addHandler(_onKeyTap);
     _dino = Dino(x: 0, y: 0);
-    _spriteAnimationController = AnimationController(vsync: this,duration: const Duration(milliseconds: 500));
-    _spriteAnimation = IntTween(begin: 0,end: 4).animate(_spriteAnimationController)
-    ..addListener(() {
-      setState(() {
-      });
+    _spriteAnimationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _spriteAnimation =
+        IntTween(begin: 0, end: 4).animate(_spriteAnimationController)
+          ..addListener(() {
+            setState(() {});
 
-      if (_spriteAnimationController.isCompleted) {
-        _spriteAnimationController.repeat();
-      }else if(_spriteAnimationController.isDismissed){
-        _spriteAnimationController.forward();
-      }
-    });
+            if (_spriteAnimationController.isCompleted) {
+              _spriteAnimationController.repeat();
+            } else if (_spriteAnimationController.isDismissed) {
+              _spriteAnimationController.forward();
+            }
+          });
     _spriteAnimationController.forward();
     _controller =
         AnimationController(duration: const Duration(seconds: 1), vsync: this)
@@ -84,7 +104,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     setState(() {
       dinoPos = Offset(_dino.x, _dino.y);
       _dino.updateDino();
-
+      for (Obstacle obstacle in obstacleList) {
+        obstacle.update();
+      }
     });
   }
 
@@ -102,9 +124,14 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       margin: const EdgeInsets.all(2),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-      child: img == null ? CircularProgressIndicator() : CustomPaint(
-              painter: GamePainter(img!,Offset(_dino.x,_dino.y),_spriteAnimation.value)
-        ,
+      child: img == null
+          ? const CircularProgressIndicator()
+          : CustomPaint(
+              painter: GamePainter(
+                  img: img!,
+                  dinoPosition: Offset(_dino.x, _dino.y),
+                  spriteImgIndex: _spriteAnimation.value,
+                  obstaclesList: obstacleList),
             ),
     );
   }
