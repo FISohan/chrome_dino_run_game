@@ -12,11 +12,11 @@ class GamePainter extends CustomPainter {
   static Size _canvasSize = Size.zero;
   static Offset _currentDinoPosition = Offset.zero;
   static Offset _initPos = Offset.zero;
-  ui.Image img;
+  ui.Image dinoImg;
   int spriteImgIndex;
   List<Obstacle> obstaclesList;
   GamePainter(
-      {required this.img,
+      {required this.dinoImg,
       required this.dinoPosition,
       required this.spriteImgIndex,
       required this.obstaclesList});
@@ -41,12 +41,12 @@ class GamePainter extends CustomPainter {
   }
 
   void _sprite(Size size, Canvas canvas, Rect pos) {
-    double w = (img.width / 5);
-    double h = img.height + 0.0;
+    double w = (dinoImg.width / 5);
+    double h = dinoImg.height + 0.0;
     Rect r = Offset(w * spriteImgIndex, 0) & Size(w, h);
     Rect r1 = pos;
     //  _debugRect(canvas, r1);
-    canvas.drawImageRect(img, r, r1, Paint());
+    canvas.drawImageRect(dinoImg, r, r1, Paint());
   }
 
   _drawDino(Canvas canvas, Size size, Offset pos) {
@@ -68,7 +68,9 @@ class GamePainter extends CustomPainter {
               size.height - obstacle.height - GROUND_BOTTOM_MARGIN) +
           Offset(obstacle.x, obstacle.y);
       Rect r = obstaclePosition & Size(obstacle.width, obstacle.height);
+      obstacle.checkOutOfViewport(obstaclePosition, size);
       _debugRect(canvas, r);
+
     }
   }
 

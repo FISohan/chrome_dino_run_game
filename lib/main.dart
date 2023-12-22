@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -35,8 +35,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   int index = 0;
   Random random = Random();
 
-  double _randomOffset() {
-    return OBSTACLE_MIN_OFFSET + random.nextDouble() * OBSTACLE_MAX_OFFSET;
+  int _randomOffset() {
+    return OBSTACLE_MIN_OFFSET + random.nextInt(OBSTACLE_MAX_OFFSET);
   }
 
   List<Obstacle> obstacleList = List.empty();
@@ -58,12 +58,13 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     obstacleList = List.generate(
-        5,
-        (index) => Obstacle(
-            x: OBSTACLE_VIEWPORT_WIDTH * (index * _randomOffset()),
-            y: 0,
-            height: OBSTACLE_VIEWPORT_HEIGHT,
-            width: OBSTACLE_VIEWPORT_WIDTH));
+      1,
+      (index) => Obstacle(
+          x: (OBSTACLE_VIEWPORT_WIDTH * (index * _randomOffset())),
+          y: 0,
+          height: OBSTACLE_VIEWPORT_HEIGHT,
+          width: OBSTACLE_VIEWPORT_WIDTH),
+    );
 
     _loadImage("assets/sprites/s.png").then((value) => img = value.image);
 
@@ -106,6 +107,12 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       _dino.updateDino();
       for (Obstacle obstacle in obstacleList) {
         obstacle.update();
+        obstacle.onOutOfViewport(() {
+          if (obstacle.outOfViewport) {
+            obstacle.resetPosition(
+                (OBSTACLE_VIEWPORT_WIDTH * (index * _randomOffset())));
+          }
+        });
       }
     });
   }
@@ -128,10 +135,11 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
           ? const CircularProgressIndicator()
           : CustomPaint(
               painter: GamePainter(
-                  img: img!,
-                  dinoPosition: Offset(_dino.x, _dino.y),
-                  spriteImgIndex: _spriteAnimation.value,
-                  obstaclesList: obstacleList),
+                img: img!,
+                dinoPosition: Offset(_dino.x, _dino.y),
+                spriteImgIndex: _spriteAnimation.value,
+                obstaclesList: obstacleList,
+              ),
             ),
     );
   }
